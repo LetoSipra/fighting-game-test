@@ -46,11 +46,22 @@ const enemy = new Fighter({
   },
 });
 
+const shop = new Sprite({
+  position: {
+    x: 600,
+    y: 100,
+  },
+  imageSource: 'asset/shop.png',
+  scale: 3,
+  frames: 6,
+});
+
 function animate() {
   window.requestAnimationFrame(animate);
   cc.fillStyle = 'black';
   cc.fillRect(0, 0, canvas.width, canvas.height);
   bg.update();
+  shop.update();
   player.update();
   enemy.update();
 
