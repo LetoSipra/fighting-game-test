@@ -5,7 +5,7 @@ canvas.width = 1024;
 canvas.height = 576;
 
 cc.fillRect(0, 0, canvas.width, canvas.height);
-const gravity = 0.2;
+const gravity = 0.5;
 
 const bg = new Sprite({
   position: {
@@ -40,6 +40,18 @@ const player = new Fighter({
       imageSource: 'asset/samuraiMack/Run.png',
       frames: 8,
     },
+    jump: {
+      imageSource: 'asset/samuraiMack/Jump.png',
+      frames: 2,
+    },
+    fall: {
+      imageSource: 'asset/samuraiMack/Fall.png',
+      frames: 2,
+    },
+    attackOne: {
+      imageSource: 'asset/samuraiMack/Attack1.png',
+      frames: 6,
+    },
   },
 });
 
@@ -53,9 +65,34 @@ const enemy = new Fighter({
     y: 0,
   },
   color: 'blue',
+  imageSource: 'asset/kenji/Idle.png',
+  frames: 4,
+  scale: 2.5,
   offset: {
-    x: 50,
-    y: 0,
+    x: 215,
+    y: 167,
+  },
+  sprites: {
+    idle: {
+      imageSource: 'asset/kenji/Idle.png',
+      frames: 4,
+    },
+    run: {
+      imageSource: 'asset/kenji/Run.png',
+      frames: 8,
+    },
+    jump: {
+      imageSource: 'asset/kenji/Jump.png',
+      frames: 2,
+    },
+    fall: {
+      imageSource: 'asset/kenji/Fall.png',
+      frames: 2,
+    },
+    attackOne: {
+      imageSource: 'asset/kenji/Attack1.png',
+      frames: 4,
+    },
   },
 });
 
@@ -92,25 +129,39 @@ function animate() {
   bg.update();
   shop.update();
   player.update();
-  //enemy.update();
+  enemy.update();
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
-  player.image = player.sprites.idle.image;
 
   //Movement
+
   if (keys.a.pressed && player.lastKey === 'a') {
     player.velocity.x = -10;
-    player.image = player.sprites.run.image;
+    player.spriteState('run');
   } else if (keys.d.pressed && player.lastKey === 'd') {
-    player.image = player.sprites.run.image;
+    player.spriteState('run');
     player.velocity.x = 10;
+  } else player.spriteState('idle');
+
+  if (player.velocity.y < 0) {
+    player.spriteState('jump');
+  } else if (player.velocity.y > 0) {
+    player.spriteState('fall');
   }
 
   if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
     enemy.velocity.x = -10;
+    enemy.spriteState('run');
   } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
     enemy.velocity.x = 10;
+    enemy.spriteState('run');
+  } else enemy.spriteState('idle');
+
+  if (enemy.velocity.y < 0) {
+    enemy.spriteState('jump');
+  } else if (enemy.velocity.y > 0) {
+    enemy.spriteState('fall');
   }
 
   //Collision
@@ -146,7 +197,9 @@ window.addEventListener('keydown', (event) => {
       break;
 
     case 'w':
-      player.velocity.y = -10;
+      if (player.velocity.y === 0) {
+        player.velocity.y = -15;
+      }
       break;
 
     case ' ':
