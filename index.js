@@ -7,6 +7,14 @@ canvas.height = 576;
 cc.fillRect(0, 0, canvas.width, canvas.height);
 const gravity = 0.2;
 
+const bg = new Sprite({
+  position: {
+    x: 0,
+    y: 0,
+  },
+  imageSource: 'asset/background.png',
+});
+
 const player = new Fighter({
   position: {
     x: 0,
@@ -21,8 +29,6 @@ const player = new Fighter({
     y: 0,
   },
 });
-
-player.draw();
 
 const enemy = new Fighter({
   position: {
@@ -40,27 +46,11 @@ const enemy = new Fighter({
   },
 });
 
-enemy.draw();
-
-const keys = {
-  a: {
-    pressed: false,
-  },
-  d: {
-    pressed: false,
-  },
-  ArrowRight: {
-    pressed: false,
-  },
-  ArrowLeft: {
-    pressed: false,
-  },
-};
-
 function animate() {
   window.requestAnimationFrame(animate);
   cc.fillStyle = 'black';
   cc.fillRect(0, 0, canvas.width, canvas.height);
+  bg.update();
   player.update();
   enemy.update();
 
@@ -100,44 +90,20 @@ function animate() {
   }
 }
 
-function endState({ player, enemy, timerId }) {
-  clearTimeout(timerId);
-  document.querySelector('#text').style.display = 'flex';
-  if (player.health === enemy.health) {
-    document.querySelector('#text').innerHTML = 'Tie';
-  } else if (player.health > enemy.health) {
-    document.querySelector('#text').innerHTML = 'Player Won!';
-  } else if (enemy.health > player.health) {
-    document.querySelector('#text').innerHTML = 'Enemy Won!';
-  }
-}
-
-function collision({ rect1, rect2 }) {
-  return (
-    rect1.attackBox.position.x + rect1.attackBox.width >= rect2.position.x &&
-    rect1.attackBox.position.x <= rect2.position.x + rect2.width &&
-    rect1.attackBox.position.y + rect1.attackBox.height >= rect2.position.y &&
-    rect1.attackBox.position.y <= rect2.position.y + rect2.height
-  );
-}
-
-let timer = 30;
-let timerId;
-function timerTick() {
-  if (timer > 0) {
-    timerId = setTimeout(timerTick, 1000);
-    timer--;
-    document.querySelector('#timer').innerHTML = timer;
-  }
-  if (timer === 0) {
-    endState({ player, enemy, timerId });
-  }
-}
-
-timerTick();
-
-animate();
-
+const keys = {
+  a: {
+    pressed: false,
+  },
+  d: {
+    pressed: false,
+  },
+  ArrowRight: {
+    pressed: false,
+  },
+  ArrowLeft: {
+    pressed: false,
+  },
+};
 window.addEventListener('keydown', (event) => {
   switch (event.key) {
     case 'd':
@@ -195,3 +161,8 @@ window.addEventListener('keyup', (event) => {
       break;
   }
 });
+
+timerTick();
+enemy.draw();
+player.draw();
+animate();

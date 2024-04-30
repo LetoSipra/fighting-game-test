@@ -1,11 +1,15 @@
 class Sprite {
-  constructor({ position }) {
+  constructor({ position, imageSource }) {
     this.position = position;
     this.width = 50;
     this.height = 150;
+    this.image = new Image();
+    this.image.src = imageSource;
   }
 
-  draw() {}
+  draw() {
+    cc.drawImage(this.image, this.position.x, this.position.y);
+  }
   update() {
     this.draw();
   }
