@@ -24,9 +24,22 @@ const player = new Fighter({
     x: 0,
     y: 0,
   },
+  imageSource: 'asset/samuraiMack/Idle.png',
+  frames: 8,
+  scale: 2.5,
   offset: {
-    x: 0,
-    y: 0,
+    x: 115,
+    y: 150,
+  },
+  sprites: {
+    idle: {
+      imageSource: 'asset/samuraiMack/Idle.png',
+      frames: 8,
+    },
+    run: {
+      imageSource: 'asset/samuraiMack/Run.png',
+      frames: 8,
+    },
   },
 });
 
@@ -56,6 +69,22 @@ const shop = new Sprite({
   frames: 6,
 });
 
+const keys = {
+  a: {
+    pressed: false,
+  },
+  d: {
+    pressed: false,
+  },
+  ArrowRight: {
+    pressed: false,
+  },
+  ArrowLeft: {
+    pressed: false,
+  },
+};
+let lastKey;
+
 function animate() {
   window.requestAnimationFrame(animate);
   cc.fillStyle = 'black';
@@ -63,15 +92,18 @@ function animate() {
   bg.update();
   shop.update();
   player.update();
-  enemy.update();
+  //enemy.update();
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
+  player.image = player.sprites.idle.image;
 
   //Movement
   if (keys.a.pressed && player.lastKey === 'a') {
     player.velocity.x = -10;
+    player.image = player.sprites.run.image;
   } else if (keys.d.pressed && player.lastKey === 'd') {
+    player.image = player.sprites.run.image;
     player.velocity.x = 10;
   }
 
@@ -101,20 +133,6 @@ function animate() {
   }
 }
 
-const keys = {
-  a: {
-    pressed: false,
-  },
-  d: {
-    pressed: false,
-  },
-  ArrowRight: {
-    pressed: false,
-  },
-  ArrowLeft: {
-    pressed: false,
-  },
-};
 window.addEventListener('keydown', (event) => {
   switch (event.key) {
     case 'd':
